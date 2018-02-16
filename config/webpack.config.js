@@ -5,7 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
   context: path.resolve(__dirname, "../"),
   devtool: 'inline-source-map',
-  entry: './src/index.ts',
+  entry: './src/index.tsx',
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, "../dist"),
@@ -27,7 +27,9 @@ module.exports = {
   },
   plugins: [
     new CopyWebpackPlugin(['static']),
-    new ForkTsCheckerWebpackPlugin(),
+    new ForkTsCheckerWebpackPlugin({
+      tsconfig: path.resolve(__dirname, "../tsconfig.json"),
+    }),
   ],
 };
 
