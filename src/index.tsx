@@ -1,29 +1,52 @@
 import { h, app } from 'hyperapp';
 
+interface Restaurant {
+  name: string,
+};
+
 interface State {
-  count: number,
+  restaurants: undefined | Array<Restaurant>,
 };
 
 const state: State = {
-  count: 0,
+  restaurants: undefined,
 };
 
 interface Actions {
-  down: (value: number) => (state: State) => State,
-  up: (value: number) => (state: State) => State,
+  // todo fix any
+  getRestaurants: () => (state: State, actions: Actions) => Promise<any>,
+  // todo doesn't actually return full state, just a slice
+  receiveRestaurants: (value: Array<Restaurant>) => (state: State, actions: Actions) => State,
 };
 
 const actions: Actions = {
-  down: value => state => ({ count: state.count - value }),
-  up: value => state => ({ count: state.count + value }),
+  getRestaurants: () => (state, actions) =>
+    fetch('http://labzero.local.lunch.pink:3000/api/restaurants', {
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(json => actions.receiveRestaurants(json.data)),
+  receiveRestaurants: value => (state, actions) =>
+    ({ restaurants: value }),
 };
 
-const view = (state: State, actions: Actions) => (
-  <div>
-    <h1>{state.count}</h1>
-    <button onclick={() => actions.down(1)}>-</button>
-    <button onclick={() => actions.up(1)}>+</button>
-  </div>
-);
+const view = (state: State, actions: Actions) => {
+  if (!state.restaurants) {
+    actions.getRestaurants();
+    return null;
+  }
 
-app(state, actions, view, document.body);
+  return (
+    <div>
+      {state.restaurants.map(r => (
+        <div>{r.name}</div>
+      ))}
+    </div>
+  );
+};
+
+app(state, actions, view, document.getElementById('root'));
