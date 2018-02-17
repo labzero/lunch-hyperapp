@@ -12,21 +12,22 @@ const state: State = {
   restaurants: undefined,
 };
 
+type Action = (state: State, actions: Actions) => Partial<State>;
+
 interface Actions {
-  // todo fix any
-  getRestaurants: () => (state: State, actions: Actions) => Promise<any>,
-  // todo doesn't actually return full state, just a slice
-  receiveRestaurants: (value: Array<Restaurant>) => (state: State, actions: Actions) => State,
+  getRestaurants: () => (state: State, actions: Actions) => Promise<Action>,
+  receiveRestaurants: (value: Array<Restaurant>) => Action,
 };
 
 const actions: Actions = {
   getRestaurants: () => (state, actions) =>
     fetch('http://labzero.local.lunch.pink:3000/api/restaurants', {
-      credentials: 'include',
+      credentials: process.env.CORS ? 'include' : 'same-origin',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
+      mode: process.env.CORS ? 'cors' : 'same-origin',
     })
       .then(response => response.json())
       .then(json => actions.receiveRestaurants(json.data)),
