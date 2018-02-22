@@ -8,6 +8,7 @@
     "build:dev": "webpack --config config/webpack.config.dev.js",
     "build:prod": "webpack --config config/webpack.config.prod.js",
     "dev": "webpack-serve --config config/webpack.config.dev.js",
+    "start": "npm run dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jeffrey Carl Faden <jeffrey@labzero.com>",
@@ -23,6 +24,7 @@
     "webpack-serve": "^1.0.0-beta.1"
   },
   "dependencies": {
-    "hyperapp": "^1.1.2"
+    "hyperapp": "^1.1.2",
+    "reselect": "^3.0.1"
   }
 }
